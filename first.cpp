@@ -7,18 +7,9 @@
 #include "shaders.h"
 #include "drawn_object.h"
 
-// Want to resize the viewport when the user resizes the window.
-// This function gets called whenever the GLFW window changes in size.
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-	glViewport(0, 0, width, height);
-}
-// Process user input.
-void processInput(GLFWwindow* window) {
-	// If the user presses Escape, the window should close.
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window, true);
-	}
-}
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void processInput(GLFWwindow* window);
+
 // Rectangle.
 std::vector<float> vertices = {
 	 0.5f,  0.5f, 0.0f, //top right
@@ -96,4 +87,17 @@ int main() {
 	// Also uninitializes GLFW.
 	glfwTerminate();
 	return 0;
+}
+
+// Process user input.
+void processInput(GLFWwindow* window) {
+	// If the user presses Escape, the window should close.
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		glfwSetWindowShouldClose(window, true);
+	}
+}
+// Want to resize the viewport when the user resizes the window.
+// This function gets called whenever the GLFW window changes in size.
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+	glViewport(0, 0, width, height);
 }
