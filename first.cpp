@@ -3,7 +3,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include "shaders.h"
+#include "drawn_object.h"
 
 // Want to resize the viewport when the user resizes the window.
 // This function gets called whenever the GLFW window changes in size.
@@ -17,13 +19,17 @@ void processInput(GLFWwindow* window) {
 		glfwSetWindowShouldClose(window, true);
 	}
 }
-// Triangle.
-float vertices[] = {
-	-0.5f, -0.5f, 0.0f,
-	 0.5f, -0.5f, 0.0f,
-	 0.0f,  0.5f, 0.0f
+// Rectangle.
+std::vector<float> vertices = {
+	 0.5f,  0.5f, 0.0f, //top right
+	 0.5f, -0.5f, 0.0f, // bottom right
+	-0.5f, -0.5f, 0.0f, // bottom left
+	-0.5f,  0.5f, 0.0f  // top left
 };
-
+std::vector<unsigned int> indices = {
+	0, 1, 3, //first tri
+	1, 2, 3  //second tri
+};
 int main() {
 	const int WIDTH = 800;
 	const int HEIGHT = 600;
@@ -58,54 +64,14 @@ int main() {
 	// Register the window change callback.
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-	unsigned int VAO;
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-
-	// Generate a Vertex Buffer Object and store its unique ID in unsigned int VBO.
-	unsigned int VBO;
-	glGenBuffers(1, &VBO);
-	// Bind the newly generated VBO to the current OpenGL Context.
-	glBindBuffer(GL_ARRAY_BUFFER, VBO); // From this point on, any buffer function calls we make (targeting GL_ARRAY_BUFFER) will affect this VBO.
-	// Send our vertices data to the GPU.
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	// Generate the unique ID of this shader.
-	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	compileShader(vertexShader, "shader.vert");
-
-	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	compileShader(fragmentShader, "shader.frag");
-
-	int success;
-	char infoLog[512];
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
-
-	unsigned int shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(shaderProgram, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::LINKING_FAILED\n" << infoLog << std::endl;
-	}
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
+	// Create the object to draw.
+	drawn_object rectangle(vertices, indices, GL_STATIC_DRAW);
+	// Set up the vertex attributes.
+	rectangle.setVertexAttribPointer(0, 3, 3 * sizeof(float));
+	// Unbind the vertex array (so we don't accidentally modify or anything).
+	glBindVertexArray(0);
+	// Create the shader program.
+	shaderProgram program("shader.vert", "shader.frag");
 
 	// Render loop
 	while (!glfwWindowShouldClose(window)) {
@@ -115,9 +81,10 @@ int main() {
 		// Clear the frame so that the previous frame doesn't bleed over.
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		glUseProgram(shaderProgram);
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glUseProgram(program.ID);
+		glBindVertexArray(rectangle.VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
 
 		// Swaps front and back buffers.
 		glfwSwapBuffers(window);
