@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "shaders.h"
 
 // Want to resize the viewport when the user resizes the window.
 // This function gets called whenever the GLFW window changes in size.
@@ -15,41 +16,6 @@ void processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
 	}
-}
-// Struct to parse and hold source text of a shader from file.
-struct shaderReader
-{
-	shaderReader(std::string);
-	std::string source;
-};
-// Load the text of a shader file.
-shaderReader::shaderReader(std::string name)
-{
-	std::string line, allLines;
-	std::ifstream theFile(name);
-	if (theFile.is_open())
-	{
-		while (std::getline(theFile, line))
-		{
-			source = source + line + "\n";
-		}
-
-		theFile.close();
-	}
-	else
-	{
-		std::cout << "Unable to open file.";
-	}
-}
-
-void compileShader(GLuint shader, const char* file) {
-	// Read in the vertex shader.
-	shaderReader vertShaderReader = shaderReader(file);
-	// Convert the source text to the correct type.
-	const GLchar* s1 = vertShaderReader.source.c_str();
-	// Set the vertex shader object's source and compile it.
-	glShaderSource(shader, 1, &s1, NULL);
-	glCompileShader(shader);
 }
 // Triangle.
 float vertices[] = {
