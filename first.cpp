@@ -12,10 +12,11 @@ void processInput(GLFWwindow* window);
 
 // Rectangle.
 std::vector<float> vertices = {
-	 0.5f,  0.5f, 0.0f, //top right
-	 0.5f, -0.5f, 0.0f, // bottom right
-	-0.5f, -0.5f, 0.0f, // bottom left
-	-0.5f,  0.5f, 0.0f  // top left
+	// positions		//colors
+	 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, //top right
+	 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom right
+	-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left
+	-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f // top left
 };
 std::vector<unsigned int> indices = {
 	0, 1, 3, //first tri
@@ -58,7 +59,8 @@ int main() {
 	// Create the object to draw.
 	drawn_object rectangle(vertices, indices, GL_STATIC_DRAW);
 	// Set up the vertex attributes.
-	rectangle.setVertexAttribPointer(0, 3, 3 * sizeof(float));
+	rectangle.setVertexAttribPointer(0, 3, 6 * sizeof(float), (void*) 0);
+	rectangle.setVertexAttribPointer(1, 3, 6 * sizeof(float), (void*) (3 * sizeof(float)));
 	// Unbind the vertex array (so we don't accidentally modify or anything).
 	glBindVertexArray(0);
 	// Create the shader program.

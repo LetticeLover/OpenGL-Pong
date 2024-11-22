@@ -7,8 +7,8 @@
 
 struct drawn_object {
 	drawn_object(std::vector<float> vertices, std::vector<unsigned int> indices, GLenum usage);
-	void setVertexAttribPointer(GLuint index, GLint size, GLsizei stride);
-	void setVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride);
+	void setVertexAttribPointer(GLuint index, GLint size, GLsizei stride, const GLvoid* pointer);
+	void setVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* pointer);
 	unsigned int VAO;
 	unsigned int VBO;
 	unsigned int EBO;

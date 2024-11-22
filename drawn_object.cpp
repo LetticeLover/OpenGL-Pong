@@ -16,10 +16,10 @@ drawn_object::drawn_object(const std::vector<float> vertices, const std::vector<
 	// Copy index data to EBO.
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), usage);
 }
-void drawn_object::setVertexAttribPointer(GLuint index, GLint size, GLsizei stride) {
-	setVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride);
+void drawn_object::setVertexAttribPointer(GLuint index, GLint size, GLsizei stride, const GLvoid* pointer) {
+	setVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride, pointer);
 }
-void drawn_object::setVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride) {
-	glVertexAttribPointer(index, size, type, normalized, stride, (void*)0);
+void drawn_object::setVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* pointer) {
+	glVertexAttribPointer(index, size, type, normalized, stride, pointer);
 	glEnableVertexAttribArray(index);
 }
