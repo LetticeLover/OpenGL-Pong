@@ -133,7 +133,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="entity.cpp" />
-    <ClCompile Include="first.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="paddle.cpp" />
     <ClCompile Include="shader.cpp" />
